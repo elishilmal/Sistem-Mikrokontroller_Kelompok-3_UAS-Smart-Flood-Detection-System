@@ -22,6 +22,19 @@ Project ini merupakan perencanaan awal untuk membuat sistem IoT Smart Agricultur
 
 ---
 
+## Komponen Project
+
+| Komponen | Jumlah |
+| ------ | ------ |
+| ESP32 | 1 |
+| LDR Sensor | 1 |
+| NTC Sensor | 1 |
+| Soil Moisture Sensor | 1 |
+| DC +5V Water Pump | 1 |
+| NPN Transistor | 1 |
+| Resistor | Secukupnya |
+
+---
 Dalam perawatan tanaman, pengguna sering kali harus mengecek kondisi tanaman secara manual. Hal ini dapat menjadi kurang efektif, terutama jika tanaman berada di tempat yang jauh atau jumlah tanaman cukup banyak. Dengan adanya teknologi IoT, proses pemantauan tanaman dapat dilakukan secara otomatis. Data dari lingkungan tanaman dapat dikirim ke sistem, kemudian ditampilkan agar pengguna dapat mengetahui kondisi tanaman secara real-time atau berkala. Project ini dibuat sebagai langkah awal untuk memahami bagaimana teknologi IoT dapat diterapkan pada bidang pertanian sederhana atau smart gardening.
 
 ---
