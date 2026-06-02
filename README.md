@@ -1,3 +1,8 @@
+## Kelompok 3
+
+1. Elis Hilmal Muhibah Syawalah - 23552011313
+---
+
 # IoT Smart Agriculture System
 
 ## Deskripsi Project
