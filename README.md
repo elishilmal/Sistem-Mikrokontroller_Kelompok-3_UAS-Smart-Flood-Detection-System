@@ -1,13 +1,14 @@
 ## Kelompok 3
 
 1. Elis Hilmal Muhibah Syawalah - 23552011313
+2. Muhammad Fahmi Abdul Majiid - 23552011423
 ---
 
 # IoT Smart Agriculture System
 
 ## Deskripsi Project
 
-Project ini merupakan perencanaan awal untuk membuat sistem IoT Smart Agriculture berbasis ESP32. Sistem ini dirancang untuk membantu proses pemantauan dan pengelolaan pertanian atau tanaman secara lebih modern menggunakan teknologi Internet of Things. Konsep utama dari project ini adalah membuat sebuah sistem yang dapat membantu pengguna memantau kondisi tanaman atau lingkungan pertanian secara otomatis, sehingga perawatan tanaman dapat dilakukan dengan lebih efektif, efisien, dan terkontrol.
+Project ini merupakan perencanaan awal untuk membuat sistem IoT Smart Agriculture berbasis ESP32 dan MQTT. Sistem ini dirancang untuk membantu proses pemantauan dan pengelolaan pertanian atau tanaman secara lebih modern menggunakan teknologi Internet of Things. Konsep utama dari project ini adalah membuat sebuah sistem yang dapat membantu pengguna memantau kondisi tanaman atau lingkungan pertanian secara otomatis, sehingga perawatan tanaman dapat dilakukan dengan lebih efektif, efisien, dan terkontrol.
 
 ---
 
@@ -34,4 +35,5 @@ Project ini memiliki konsep utama berupa sistem pertanian pintar yang dapat mema
 3. Data dikirim melalui koneksi internet.
 4. Data dapat diterima oleh sistem monitoring.
 5. Pengguna dapat melihat informasi kondisi tanaman.
-6. Sistem dapat dikembangkan agar mampu memberikan notifikasi atau melakukan aksi otomatis.
+6. Nantinya system akan secara otomatis mendeteksi tanaman dan kondisi permukaann tanah apakah lembab atau kering, sehat dan atau tidak.
+7. Sistem dapat dikembangkan agar mampu memberikan notifikasi atau melakukan aksi otomatis.
