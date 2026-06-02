@@ -36,4 +36,4 @@ Project ini memiliki konsep utama berupa sistem pertanian pintar yang dapat mema
 4. Data dapat diterima oleh sistem monitoring.
 5. Pengguna dapat melihat informasi kondisi tanaman.
 6. Nantinya system akan secara otomatis mendeteksi tanaman dan kondisi permukaann tanah apakah lembab atau kering, sehat dan atau tidak.
-7. Sistem dapat dikembangkan agar mampu memberikan notifikasi atau melakukan aksi otomatis.
+7. Sistem dapat dikembangkan agar mampu memberikan notifikasi atau melakukan aksi otomatis dan mencakup ruang lingkup yang lebih besar.
