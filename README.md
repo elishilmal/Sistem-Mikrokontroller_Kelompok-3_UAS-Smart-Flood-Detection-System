@@ -2,6 +2,7 @@
 
 1. Elis Hilmal Muhibah Syawalah - 23552011313
 2. Muhammad Fahmi Abdul Majiid - 23552011423
+3. Challik Ruben - 23552011333
 ---
 
 # IoT Smart Agriculture System
