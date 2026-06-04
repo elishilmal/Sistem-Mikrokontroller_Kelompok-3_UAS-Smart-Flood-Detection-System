@@ -64,12 +64,21 @@ IoT Smart Flood Detection System adalah sistem deteksi dini banjir berbasis Inte
 
 ## Status Kondisi Banjir
 
-| Jarak Air | Status  | LED    | Buzzer        |
-| --------- | ------- | ------ | ------------- |
-| ≤ 10 cm   | Aman    | Hijau  | Mati          |
-| > 30 cm   | Waspada | Kuning | Alarm Waspada |
-| > 50 cm   | Siaga   | Oranye | Alarm Siaga   |
-| > 100 cm  | Darurat | Merah  | Alarm Darurat |
+| Jarak Air | Status | Indikator LED | Buzzer |
+|-----------|---------|---------------|---------|
+| > 100 cm | Aman | Hijau | Mati |
+| 51 – 100 cm | Waspada | Kuning | Bunyi Lambat |
+| 11 – 50 cm | Siaga | Oranye | Bunyi Sedang |
+| ≤ 10 cm | Darurat | Merah | Bunyi Terus-Menerus |
+
+## Penjelasan Sistem
+
+Karena sensor HC-SR04 dipasang di atas permukaan air, nilai jarak yang terbaca akan semakin kecil ketika permukaan air naik. Oleh karena itu:
+
+- Jarak > 100 cm menunjukkan kondisi aman karena permukaan air masih jauh dari sensor.
+- Jarak 51–100 cm menunjukkan kondisi waspada karena air mulai meningkat.
+- Jarak 11–50 cm menunjukkan kondisi siaga karena air semakin mendekati sensor.
+- Jarak ≤ 10 cm menunjukkan kondisi darurat karena ketinggian air sudah sangat dekat dengan sensor.
 
 ---
 
