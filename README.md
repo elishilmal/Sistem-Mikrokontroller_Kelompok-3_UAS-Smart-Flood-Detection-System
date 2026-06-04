@@ -89,3 +89,9 @@ Project ini memiliki konsep utama berupa sistem deteksi banjir pintar yang dapat
 10. Dirancang untuk membantu pengguna mendapatkan informasi potensi banjir lebih cepat sehingga dapat melakukan tindakan pencegahan lebih dini.
 11. Mendukung implementasi Smart Environment dan sistem mitigasi bencana berbasis teknologi IoT.
 12. Dapat dikembangkan lebih lanjut dengan fitur notifikasi otomatis, penyimpanan data cloud, dan aplikasi mobile monitoring.
+
+---
+
+## Model Struktur Rangkaian Sistem
+
+![Rangkaian](Assets/image.png)
