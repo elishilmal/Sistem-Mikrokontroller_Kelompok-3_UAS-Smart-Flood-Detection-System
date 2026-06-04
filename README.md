@@ -5,49 +5,87 @@
 3. Challik Ruben - 23552011333
 ---
 
-# IoT Smart Agriculture System
+# IoT Smart Flood Detection System
 
 ## Deskripsi Project
 
-Project ini merupakan perencanaan awal untuk membuat sistem IoT Smart Agriculture berbasis ESP32 dan MQTT. Sistem ini dirancang untuk membantu proses pemantauan dan pengelolaan pertanian atau tanaman secara lebih modern menggunakan teknologi Internet of Things. Konsep utama dari project ini adalah membuat sebuah sistem yang dapat membantu pengguna memantau kondisi tanaman atau lingkungan pertanian secara otomatis, sehingga perawatan tanaman dapat dilakukan dengan lebih efektif, efisien, dan terkontrol.
+IoT Smart Flood Detection System adalah sistem deteksi dini banjir berbasis Internet of Things (IoT) yang dirancang untuk memantau ketinggian air secara real-time menggunakan sensor ultrasonik dan mikrokontroler ESP32. Sistem ini mampu mengukur jarak permukaan air, mengirimkan data ke server melalui protokol MQTT, serta memberikan peringatan dini menggunakan LED indikator dan buzzer sesuai tingkat bahaya yang terdeteksi. Dengan adanya sistem ini, pengguna dapat mengetahui potensi banjir lebih cepat sehingga dapat melakukan tindakan pencegahan sebelum kondisi menjadi lebih parah.
 
 ---
 
 ## Tujuan Project
 
-1. Membuat sistem IoT sederhana untuk membantu pemantauan kondisi tanaman.
-2. Menggunakan ESP32 sebagai perangkat utama dalam sistem.
-3. Menerapkan konsep smart agriculture.
-4. Membantu pengguna mengetahui kondisi lingkungan tanaman secara lebih mudah.
-5. Mengembangkan sistem yang nantinya dapat terhubung ke aplikasi mobile/website.
+1. Membuat sistem deteksi banjir secara otomatis.
+2. Memonitor ketinggian air secara real-time.
+3. Memberikan peringatan dini ketika air mencapai batas bahaya.
+4. Menerapkan konsep IoT pada sistem keamanan lingkungan.
+5. Membantu pengguna mengetahui potensi banjir lebih cepat.
+
+---
+
+## Fitur Utama
+
+1. Monitoring ketinggian air otomatis: Sensor ultrasonik HC-SR04 digunakan untuk mengukur jarak antara sensor dan permukaan air secara otomatis.
+2. Real-time data transmission: Data sensor dikirim secara real-time menggunakan protokol MQTT melalui jaringan WiFi.
+3. Smart alarm system: Buzzer akan aktif dengan pola alarm berbeda sesuai tingkat bahaya banjir.
+4. LED status indicator: LED digunakan sebagai indikator visual untuk menunjukkan status kondisi air saat ini.
+5. IoT monitoring: Data dapat diintegrasikan dengan dashboard monitoring seperti MQTT Explorer.
 
 ---
 
 ## Komponen Project
 
-| Komponen | Jumlah |
-| ------ | ------ |
-| ESP32 | 1 |
-| LDR Sensor | 1 |
-| NTC Sensor | 1 |
-| Soil Moisture Sensor | 1 |
-| DC +5V Water Pump | 1 |
-| NPN Transistor | 1 |
-| Resistor | Secukupnya |
+| No | Komponen                  | Jumlah     |
+| -- | ------------------------- | ---------- |
+| 1  | ESP32 DevKit              | 1          |
+| 2  | HC-SR04 Ultrasonic Sensor | 1          |
+| 3  | LED Hijau                 | 1          |
+| 4  | LED Kuning                | 1          |
+| 5  | LED Orange                | 1          |
+| 6  | LED Merah                 | 1          |
+| 7  | Active Buzzer             | 1          |
+| 8  | Kabel Jumper              | Secukupnya |
+| 9  | Power Supply 5V           | 1          |
+
 
 ---
-Dalam perawatan tanaman, pengguna sering kali harus mengecek kondisi tanaman secara manual. Hal ini dapat menjadi kurang efektif, terutama jika tanaman berada di tempat yang jauh atau jumlah tanaman cukup banyak. Dengan adanya teknologi IoT, proses pemantauan tanaman dapat dilakukan secara otomatis. Data dari lingkungan tanaman dapat dikirim ke sistem, kemudian ditampilkan agar pengguna dapat mengetahui kondisi tanaman secara real-time atau berkala. Project ini dibuat sebagai langkah awal untuk memahami bagaimana teknologi IoT dapat diterapkan pada bidang pertanian sederhana atau smart gardening.
+
+## Cara Kerja Sistem:
+
+1. Sensor HC-SR04 membaca jarak permukaan air.
+2. ESP32 menerima dan memproses data sensor.
+3. Sistem menentukan status kondisi banjir.
+4. Data dikirim ke MQTT Broker melalui WiFi.
+5. LED indikator menyala sesuai status.
+6. Buzzer memberikan alarm sesuai tingkat bahaya.
+7. Data dapat dipantau secara real-time dari dashboard IoT.
+
+---
+
+## Status Kondisi Banjir
+
+| Jarak Air | Status  | LED    | Buzzer        |
+| --------- | ------- | ------ | ------------- |
+| ≤ 10 cm   | Aman    | Hijau  | Mati          |
+| > 30 cm   | Waspada | Kuning | Alarm Waspada |
+| > 50 cm   | Siaga   | Oranye | Alarm Siaga   |
+| > 100 cm  | Darurat | Merah  | Alarm Darurat |
 
 ---
 
 ## Konsep Project
 
-Project ini memiliki konsep utama berupa sistem pertanian pintar yang dapat memantau kondisi tanaman menggunakan ESP32.
+Project ini memiliki konsep utama berupa sistem deteksi banjir pintar yang dapat memantau kondisi air menggunakan ESP32.
 
-1. ESP32 menjadi pusat kendali utama.
-2. Perangkat membaca kondisi lingkungan tanaman.
-3. Data dikirim melalui koneksi internet.
-4. Data dapat diterima oleh sistem monitoring.
-5. Pengguna dapat melihat informasi kondisi tanaman.
-6. Nantinya system akan secara otomatis mendeteksi tanaman dan kondisi permukaann tanah apakah lembab atau kering, sehat dan atau tidak.
-7. Sistem dapat dikembangkan agar mampu memberikan notifikasi atau melakukan aksi otomatis dan mencakup ruang lingkup yang lebih besar.
+1. Menerapkan konsep Internet of Things (IoT) untuk sistem deteksi dini banjir.
+2. Menggunakan sensor ultrasonik HC-SR04 untuk mengukur jarak antara sensor dan permukaan air.
+3. ESP32 berfungsi sebagai mikrokontroler yang memproses data sensor dan menentukan status kondisi banjir.
+4. Data ketinggian air dikirim secara real-time melalui jaringan WiFi menggunakan protokol MQTT.
+5. MQTT Broker digunakan sebagai media komunikasi antara perangkat IoT dan sistem monitoring.
+6. LED indikator digunakan untuk menampilkan status kondisi banjir secara visual.
+7. Buzzer digunakan sebagai alarm peringatan dini ketika ketinggian air mencapai level tertentu.
+8. Sistem dapat dipantau melalui dashboard monitoring atau aplikasi MQTT secara real-time.
+9. Memiliki empat tingkat status kondisi yaitu Aman, Waspada, Siaga, dan Darurat.
+10. Dirancang untuk membantu pengguna mendapatkan informasi potensi banjir lebih cepat sehingga dapat melakukan tindakan pencegahan lebih dini.
+11. Mendukung implementasi Smart Environment dan sistem mitigasi bencana berbasis teknologi IoT.
+12. Dapat dikembangkan lebih lanjut dengan fitur notifikasi otomatis, penyimpanan data cloud, dan aplikasi mobile monitoring.
