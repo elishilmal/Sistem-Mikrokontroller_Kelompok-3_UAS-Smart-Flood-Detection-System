@@ -101,6 +101,11 @@ Project ini memiliki konsep utama berupa sistem deteksi banjir pintar yang dapat
 
 ---
 
-## Model Struktur Rangkaian Sistem
+## Model Struktur Rangkaian dan Penjelasan Sistem
 
 ![Rangkaian](Assets/image.png)
+
+Dalam simulasi pada Website WOKWI bentuk struktur rangkaian sistem akan seperti diatas, dengan menggunakan protokol MQTT sebagai perantara pengirim data ke server.
+Dimana pada sistem ini program akan menggunakan sensor ultrasonic untuk mendeteksi volume air, dibantu dengan tambahan RTOS dan security (encrypt & decrypt).
+4 Led pada sistem digunakan sebagai tolak ukur keadaan volume air, setiap warna menyesuaikan dengan situasi banjir.
+
