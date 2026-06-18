@@ -41,11 +41,10 @@ IoT Smart Flood Detection System adalah sistem deteksi dini banjir berbasis Inte
 | 2  | HC-SR04 Ultrasonic Sensor | 1          |
 | 3  | LED Hijau                 | 1          |
 | 4  | LED Kuning                | 1          |
-| 5  | LED Orange                | 1          |
-| 6  | LED Merah                 | 1          |
+| 5  | LED Merah                 | 1          |
+| 6  | LED Hitam                 | 1          |
 | 7  | Active Buzzer             | 1          |
 | 8  | Kabel Jumper              | Secukupnya |
-| 9  | Power Supply 5V           | 1          |
 
 
 ---
@@ -68,8 +67,8 @@ IoT Smart Flood Detection System adalah sistem deteksi dini banjir berbasis Inte
 |-----------|---------|---------------|---------|
 | > 100 cm | Aman | Hijau | Mati |
 | 51 – 100 cm | Waspada | Kuning | Bunyi Lambat |
-| 11 – 50 cm | Siaga | Oranye | Bunyi Sedang |
-| ≤ 10 cm | Darurat | Merah | Bunyi Terus-Menerus |
+| 11 – 50 cm | Siaga | Merah | Bunyi Sedang |
+| ≤ 10 cm | Darurat | Hitam | Bunyi Terus-Menerus |
 
 ## Penjelasan Sistem
 
