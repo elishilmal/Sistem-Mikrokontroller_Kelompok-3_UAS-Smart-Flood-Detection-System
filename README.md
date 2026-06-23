@@ -81,10 +81,10 @@ Data dapat dipantau melalui dashboard monitoring seperti MQTT Explorer atau plat
 
 | Jarak Air | Status | LED | Buzzer |
 |--------------|---------|------|----------|
-| ≤ 10 cm  | Aman | Hijau | Mati |
-| 11 – 50 cm | Waspada | Kuning | Bunyi Lambat |
-| 51 – 100 cm  | Siaga | Merah | Bunyi Sedang |
-| > 100 cm | Darurat | Hitam | Bunyi Terus-Menerus |
+| > 100 cm | Aman | Hijau | Mati |
+| 51 – 100 cm | Waspada | Kuning | Bunyi Lambat |
+| 11 – 50 cm | Siaga | Merah | Bunyi Sedang |
+| ≤ 10 cm | Darurat | Hitam | Bunyi Terus-Menerus |
 
 ---
 
