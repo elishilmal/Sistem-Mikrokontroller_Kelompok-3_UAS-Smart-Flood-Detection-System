@@ -86,8 +86,6 @@ Data dapat dipantau melalui dashboard monitoring seperti MQTT Explorer atau plat
 | 51 – 100 cm  | Siaga | Merah | Bunyi Sedang |
 | > 100 cm | Darurat | Hitam | Bunyi Terus-Menerus |
 
-> **Catatan:** Rentang nilai sensor dapat disesuaikan berdasarkan hasil kalibrasi Water Level Depth Detection Sensor yang digunakan.
-
 ---
 
 ## Penjelasan Sistem
