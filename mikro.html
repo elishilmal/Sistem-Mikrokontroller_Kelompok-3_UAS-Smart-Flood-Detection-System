@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flood Monitor — Pendeteksi Banjir</title>
+<script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg:        #0d1117;
+    --bg-card:   #161b22;
+    --bg-card2:  #1c2128;
+    --border:    #30363d;
+    --text:      #e6edf3;
+    --text-muted:#8b949e;
+    --blue:      #388bfd;
+    --green:     #3fb950;
+    --yellow:    #d29922;
+    --orange:    #db6d28;
+    --red:       #f85149;
+    --radius:    12px;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  .header {
+    background: var(--bg-card);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .header-left { display: flex; align-items: center; gap: 12px; }
+  .header-logo {
+    width: 36px; height: 36px;
+    background: linear-gradient(135deg, #1a6fad, #388bfd);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+  }
+  .header-title { font-size: 17px; font-weight: 600; }
+  .header-sub   { font-size: 12px; color: var(--text-muted); margin-top: 1px; }
+
+  .conn-badge {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 12px; padding: 5px 10px;
+    border-radius: 20px; border: 1px solid var(--border);
+    background: var(--bg-card2);
+    transition: all .3s;
+  }
+  .conn-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--text-muted);
+    transition: background .3s;
+  }
+  .conn-badge.connected .conn-dot {
+    background: var(--green);
+    box-shadow: 0 0 6px var(--green);
+    animation: pulse 2s infinite;
+  }
+  .conn-badge.connecting .conn-dot { background: var(--yellow); }
+  .conn-badge.error .conn-dot       { background: var(--red); }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: .4; }
+  }
+
+  .main { max-width: 1100px; margin: 0 auto; padding: 28px 24px; }
+
+  .status-banner {
+    border-radius: var(--radius);
+    padding: 24px 28px;
+    margin-bottom: 24px;
+    border: 1px solid var(--border);
+    background: var(--bg-card);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    transition: border-color .4s, background .4s;
+    position: relative;
+    overflow: hidden;
+  }
+  .status-banner::before {
+    content: '';
+    position: absolute; left: 0; top: 0; bottom: 0;
+    width: 4px;
+    background: var(--status-color, var(--text-muted));
+    transition: background .4s;
+  }
+  .banner-info { display: flex; align-items: center; gap: 16px; }
+  .banner-icon { font-size: 40px; line-height: 1; }
+  .banner-label { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--text-muted); }
+  .banner-status {
+    font-size: 26px; font-weight: 700; margin-top: 3px;
+    color: var(--status-color, var(--text-muted));
+    transition: color .4s;
+  }
+  .banner-right { text-align: right; }
+  .banner-dist  { font-size: 42px; font-weight: 700; line-height: 1; }
+  .banner-dist span { font-size: 18px; font-weight: 400; color: var(--text-muted); margin-left: 4px; }
+
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin-bottom: 24px; }
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+  }
+  .card-label { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: .07em; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+  .card-value { font-size: 24px; font-weight: 600; }
+  .card-sub   { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+
+  .visual-wrap {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 24px;
+  }
+  .visual-title { font-size: 14px; font-weight: 600; margin-bottom: 16px; color: var(--text-muted); text-transform: uppercase; letter-spacing: .07em; }
+  .water-container {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 32px;
+  }
+  .tank-wrap { text-align: center; }
+  .tank {
+    width: 90px; height: 220px;
+    border: 2px solid var(--border);
+    border-radius: 4px 4px 8px 8px;
+    position: relative;
+    background: var(--bg-card2);
+    overflow: hidden;
+    margin: 0 auto 10px;
+  }
+  .tank-water {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    background: linear-gradient(0deg, #1a4a7a, #388bfd88);
+    transition: height .8s ease, background .4s;
+    border-radius: 0 0 6px 6px;
+  }
+  .tank-water.danger  { background: linear-gradient(0deg, #7a1a1a, #f8514988); }
+  .tank-water.warning { background: linear-gradient(0deg, #7a4a1a, #db6d2888); }
+  .tank-water.siaga   { background: linear-gradient(0deg, #7a6a1a, #d2992288); }
+  .tank-label { font-size: 13px; color: var(--text-muted); }
+  .tank-val   { font-size: 18px; font-weight: 600; margin-top: 3px; }
+
+  .level-markers {
+    display: flex; flex-direction: column; justify-content: space-between;
+    height: 220px; padding: 4px 0;
+  }
+  .level-mark { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--text-muted); }
+  .level-mark-line { width: 14px; height: 1px; background: var(--border); }
+
+  .chart-wrap {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 24px;
+  }
+  .chart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+  .chart-title  { font-size: 14px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: .07em; }
+  #chartCanvas  { width: 100% !important; }
+
+  .log-wrap {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+  }
+  .log-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+  .log-title  { font-size: 14px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: .07em; }
+  .log-clear  { font-size: 12px; color: var(--text-muted); cursor: pointer; padding: 4px 10px; border: 1px solid var(--border); border-radius: 6px; background: transparent; color: var(--text-muted); }
+  .log-clear:hover { background: var(--bg-card2); color: var(--text); }
+  .log-list   { max-height: 240px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; }
+  .log-entry  { display: flex; gap: 12px; font-size: 13px; padding: 8px 12px; background: var(--bg-card2); border-radius: 6px; align-items: center; }
+  .log-time   { color: var(--text-muted); min-width: 68px; font-family: monospace; }
+  .log-dot    { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+  .log-msg    { flex: 1; }
+
+  .c-safe    { color: var(--green); }
+  .c-warning { color: var(--yellow); }
+  .c-danger  { color: var(--orange); }
+  .c-critical{ color: var(--red); }
+  .c-unknown { color: var(--text-muted); }
+
+  .bg-safe    { background: var(--green); }
+  .bg-warning { background: var(--yellow); }
+  .bg-danger  { background: var(--orange); }
+  .bg-critical{ background: var(--red); }
+  .bg-unknown { background: var(--text-muted); }
+
+  .footer { text-align: center; padding: 24px; color: var(--text-muted); font-size: 12px; border-top: 1px solid var(--border); margin-top: 8px; }
+
+  @keyframes flash-border {
+    0%, 100% { border-color: var(--border); }
+    50%       { border-color: var(--red); }
+  }
+  .status-banner.alert { animation: flash-border 1s infinite; }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-left">
+    <div class="header-logo">🌊</div>
+    <div>
+      <div class="header-title">Flood Monitor</div>
+      <div class="header-sub">Sistem Pendeteksi Banjir — ESP32 + HC-SR04</div>
+    </div>
+  </div>
+  <div class="conn-badge connecting" id="connBadge">
+    <div class="conn-dot"></div>
+    <span id="connText">Menghubungkan...</span>
+  </div>
+</header>
+
+<main class="main">
+
+  <div class="status-banner" id="statusBanner" style="--status-color: var(--text-muted)">
+    <div class="banner-info">
+      <div class="banner-icon" id="bannerIcon">🔄</div>
+      <div>
+        <div class="banner-label">Status Ketinggian Air</div>
+        <div class="banner-status" id="bannerStatus">Menunggu data...</div>
+      </div>
+    </div>
+    <div class="banner-right">
+      <div class="banner-dist" id="bannerDist">--<span>cm</span></div>
+      <div style="font-size:12px; color: var(--text-muted); margin-top:4px;" id="bannerTime">Belum ada sinyal</div>
+    </div>
+  </div>
+
+  <div class="cards">
+    <div class="card">
+      <div class="card-label">📡 Device</div>
+      <div class="card-value" id="metaDevice">—</div>
+      <div class="card-sub" id="metaUptime">Uptime: —</div>
+    </div>
+    <div class="card">
+      <div class="card-label">📶 WiFi Signal</div>
+      <div class="card-value" id="metaRssi">— dBm</div>
+      <div class="card-sub" id="metaRssiBar">—</div>
+    </div>
+    <div class="card">
+      <div class="card-label">📊 Total Pembacaan</div>
+      <div class="card-value" id="metaCount">0</div>
+      <div class="card-sub" id="metaRate">Interval: —</div>
+    </div>
+    <div class="card">
+      <div class="card-label">⏱️ Update Terakhir</div>
+      <div class="card-value" style="font-size:18px" id="metaLast">—</div>
+      <div class="card-sub" id="metaAge">—</div>
+    </div>
+  </div>
+
+  <div class="visual-wrap">
+    <div class="visual-title">Visualisasi Ketinggian Air</div>
+    <div class="water-container">
+      <div class="level-markers">
+        <div class="level-mark"><div class="level-mark-line"></div><span style="color:var(--text-muted)">0 cm (max)</span></div>
+        <div class="level-mark"><div class="level-mark-line"></div><span style="color:var(--red)">▲ Kritis &lt;10 cm</span></div>
+        <div class="level-mark"><div class="level-mark-line"></div><span style="color:var(--orange)">▲ Bahaya 10-20 cm</span></div>
+        <div class="level-mark"><div class="level-mark-line"></div><span style="color:var(--yellow)">▲ Siaga 20-40 cm</span></div>
+        <div class="level-mark"><div class="level-mark-line"></div><span style="color:var(--green)">✓ Aman &gt;40 cm</span></div>
+        <div class="level-mark"><div class="level-mark-line"></div><span style="color:var(--text-muted)">Max range</span></div>
+      </div>
+      <div class="tank-wrap">
+        <div class="tank" id="tankViz">
+          <div class="tank-water" id="tankWater" style="height:0%"></div>
+        </div>
+        <div class="tank-label">Ketinggian Air</div>
+        <div class="tank-val" id="tankVal">— cm</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="chart-wrap">
+    <div class="chart-header">
+      <div class="chart-title">📈 Grafik Jarak (60 detik terakhir)</div>
+      <div style="font-size:12px; color:var(--text-muted)">Realtime • Auto update</div>
+    </div>
+    <canvas id="chartCanvas" height="140"></canvas>
+  </div>
+
+  <div class="log-wrap">
+    <div class="log-header">
+      <div class="log-title">📋 Log Peristiwa</div>
+      <button class="log-clear" onclick="clearLog()">Bersihkan</button>
+    </div>
+    <div class="log-list" id="logList">
+      <div class="log-entry">
+        <span class="log-time">--:--:--</span>
+        <div class="log-dot bg-unknown"></div>
+        <span class="log-msg">Menunggu koneksi MQTT...</span>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<footer class="footer">
+  Flood Monitor v1.0 &nbsp;·&nbsp; MQTT: broker.hivemq.com &nbsp;·&nbsp; Topic: floodmonitor/#
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+const MQTT_BROKER    = 'ws://floodflood.cloud.shiftr.io';
+const TOPIC_SENSOR   = 'floodmonitor/sensor';
+const TOPIC_STATUS   = 'floodmonitor/status';
+const TOPIC_HEARTBEAT= 'floodmonitor/heartbeat';
+
+let readingCount = 0;
+let lastTimestamp = null;
+let chartData = { labels: [], values: [] };
+let mqttClient = null;
+
+const ctx = document.getElementById('chartCanvas').getContext('2d');
+const chart = new Chart(ctx, {
+  type: 'line',
+  data: {
+    labels: [],
+    datasets: [{
+      label: 'Jarak (cm)',
+      data: [],
+      borderColor: '#388bfd',
+      backgroundColor: 'rgba(56,139,253,0.08)',
+      borderWidth: 2,
+      pointRadius: 3,
+      pointBackgroundColor: '#388bfd',
+      tension: 0.3,
+      fill: true,
+    }]
+  },
+  options: {
+    responsive: true,
+    animation: { duration: 300 },
+    scales: {
+      x: { ticks: { color:'#8b949e', maxTicksLimit: 8 }, grid: { color:'#30363d' } },
+      y: {
+        ticks: { color:'#8b949e' },
+        grid: { color:'#30363d' },
+        min: 0, suggestedMax: 60,
+        reverse: false
+      }
+    },
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          label: ctx => `Jarak: ${ctx.raw.toFixed(1)} cm`
+        }
+      }
+    }
+  }
+});
+
+const STATUS_MAP = {
+  safe:      { label:'🟢 AMAN',           color:'var(--green)',  icon:'✅', cls:'c-safe',     dot:'bg-safe' },
+  warning:   { label:'🟡 SIAGA',          color:'var(--yellow)', icon:'⚠️', cls:'c-warning',  dot:'bg-warning' },
+  danger:    { label:'🔴 BAHAYA',         color:'var(--orange)', icon:'🚨', cls:'c-danger',   dot:'bg-danger' },
+  critical:  { label:'🆘 BANJIR KRITIS', color:'var(--red)',    icon:'🆘', cls:'c-critical',  dot:'bg-critical' },
+  no_signal: { label:'📡 Tidak ada sinyal', color:'var(--text-muted)', icon:'❓', cls:'c-unknown', dot:'bg-unknown' },
+  unknown:   { label:'⏳ Menunggu...',    color:'var(--text-muted)', icon:'🔄', cls:'c-unknown', dot:'bg-unknown' },
+};
+
+function updateUI(data) {
+  const s = STATUS_MAP[data.status] || STATUS_MAP.unknown;
+  const dist = data.distance;
+  const now = new Date();
+  const timeStr = now.toLocaleTimeString('id-ID');
+
+  // Banner
+  const banner = document.getElementById('statusBanner');
+  banner.style.setProperty('--status-color', s.color);
+  banner.classList.toggle('alert', data.status === 'critical');
+  document.getElementById('bannerIcon').textContent = s.icon;
+  document.getElementById('bannerStatus').textContent = s.label.replace(/^\S+\s/, '');
+  document.getElementById('bannerStatus').className = 'banner-status ' + s.cls;
+  document.getElementById('bannerDist').innerHTML = dist > 0 ? `${dist.toFixed(1)}<span>cm</span>` : `--<span>cm</span>`;
+  document.getElementById('bannerTime').textContent = 'Update: ' + timeStr;
+
+  const maxRange = 60;
+  const waterPct = dist > 0 ? Math.min(100, (1 - (dist / maxRange)) * 100) : 0;
+  const tankWater = document.getElementById('tankWater');
+  tankWater.style.height = waterPct + '%';
+  tankWater.className = 'tank-water ' + (data.status === 'critical' ? 'danger' : data.status === 'danger' ? 'danger' : data.status === 'warning' ? 'siaga' : '');
+  document.getElementById('tankVal').textContent = dist > 0 ? dist.toFixed(1) + ' cm' : '—';
+
+  // Metadata
+  document.getElementById('metaDevice').textContent = data.device_id || '—';
+  document.getElementById('metaUptime').textContent = 'Uptime: ' + formatUptime(data.uptime || 0);
+  document.getElementById('metaRssi').textContent = (data.wifi_rssi || '—') + ' dBm';
+  document.getElementById('metaRssiBar').textContent = rssiLabel(data.wifi_rssi);
+  readingCount++;
+  document.getElementById('metaCount').textContent = readingCount;
+  document.getElementById('metaLast').textContent = timeStr;
+  lastTimestamp = now;
+  updateAge();
+
+  // Chart
+  const timeLabel = now.toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit', second:'2-digit'});
+  chart.data.labels.push(timeLabel);
+  chart.data.datasets[0].data.push(dist > 0 ? dist : null);
+  if (chart.data.labels.length > 30) {
+    chart.data.labels.shift();
+    chart.data.datasets[0].data.shift();
+  }
+  chart.update('none');
+
+  addLog(s.dot, `${s.label} — Jarak: ${dist > 0 ? dist.toFixed(1) + ' cm' : 'tidak terdeteksi'}`);
+}
+
+function updateAge() {
+  if (!lastTimestamp) return;
+  const secs = Math.floor((new Date() - lastTimestamp) / 1000);
+  document.getElementById('metaAge').textContent = secs < 5 ? 'Baru saja' : `${secs} detik lalu`;
+}
+setInterval(updateAge, 1000);
+
+function addLog(dotClass, msg) {
+  const list = document.getElementById('logList');
+  const now = new Date().toLocaleTimeString('id-ID');
+  const el = document.createElement('div');
+  el.className = 'log-entry';
+  el.innerHTML = `<span class="log-time">${now}</span><div class="log-dot ${dotClass}"></div><span class="log-msg">${msg}</span>`;
+  list.insertBefore(el, list.firstChild);
+  while (list.children.length > 50) list.removeChild(list.lastChild);
+}
+
+function clearLog() {
+  document.getElementById('logList').innerHTML = '';
+  addLog('bg-unknown', 'Log dibersihkan');
+}
+
+function formatUptime(secs) {
+  if (secs < 60) return secs + 'd';
+  if (secs < 3600) return Math.floor(secs/60) + 'm ' + (secs%60) + 'd';
+  return Math.floor(secs/3600) + 'j ' + Math.floor((secs%3600)/60) + 'm';
+}
+
+function rssiLabel(rssi) {
+  if (!rssi) return '—';
+  if (rssi > -50) return '📶 Sangat kuat';
+  if (rssi > -65) return '📶 Kuat';
+  if (rssi > -75) return '📶 Sedang';
+  return '📶 Lemah';
+}
+
+function connectMQTT() {
+  setConnStatus('connecting', 'Menghubungkan...');
+  addLog('bg-unknown', 'Mencoba koneksi ke broker MQTT...');
+
+  const clientId = 'flood1_flood' + Math.random().toString(16).substr(2, 8);
+  mqttClient = mqtt.connect('wss://floodflood.cloud.shiftr.io', {
+    username: 'floodflood',
+    password: 'banjirr',
+    clientId: 'flood1_flood' + Math.random().toString(16).substr(2,8),
+    reconnectPeriod: 5000,
+    clean: true
+});
+
+  mqttClient.on('connect', () => {
+    setConnStatus('connected', 'Terhubung');
+    addLog('bg-safe', 'MQTT terhubung ke floodflood.cloud.shiftr.io');
+
+    mqttClient.subscribe([TOPIC_SENSOR, TOPIC_STATUS, TOPIC_HEARTBEAT], err => {
+      if (!err) addLog('bg-safe', 'Subscribe berhasil — menunggu data ESP32...');
+    });
+  });
+
+  mqttClient.on('message', (topic, payload) => {
+    const msg = payload.toString();
+    if (topic === TOPIC_SENSOR) {
+      try {
+        const data = JSON.parse(msg);
+        updateUI(data);
+        document.getElementById('metaRate').textContent = 'Interval: ~2 detik';
+      } catch(e) { addLog('bg-danger', 'Error parse JSON: ' + e.message); }
+    } else if (topic === TOPIC_HEARTBEAT) {
+      try {
+        const hb = JSON.parse(msg);
+        addLog('bg-unknown', `Heartbeat dari ${hb.device_id || 'device'} — uptime ${formatUptime(hb.uptime || 0)}`);
+      } catch(e) {}
+    }
+  });
+
+  mqttClient.on('error', err => {
+    setConnStatus('error', 'Error');
+    addLog('bg-critical', 'MQTT error: ' + err.message);
+  });
+
+  mqttClient.on('offline', () => {
+    setConnStatus('connecting', 'Offline...');
+    addLog('bg-danger', 'MQTT offline, mencoba reconnect...');
+  });
+
+  mqttClient.on('reconnect', () => {
+    setConnStatus('connecting', 'Reconnecting...');
+  });
+}
+
+function setConnStatus(state, text) {
+  const badge = document.getElementById('connBadge');
+  badge.className = 'conn-badge ' + state;
+  document.getElementById('connText').textContent = text;
+}
+
+// ============ INIT ============
+connectMQTT();
+</script>
+</body>
+</html>
