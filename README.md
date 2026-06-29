@@ -68,17 +68,17 @@ Data dapat dipantau melalui dashboard monitoring seperti MQTT Explorer atau plat
 
 ## Komponen Project
 
-| No | Komponen                          | Jumlah     |
-| -- | --------------------------------- | ---------- |
-| 1  | ESP32 DevKit                      | 1          |
-| 2  | Sensor Ultrasonik HC-SR04         | 1          |
-| 3  | Water Sensor / Water Level Sensor | 1          |
-| 4  | LCD 16×2 I2C                      | 1          |
-| 5  | LED Hijau                         | 1          |
-| 6  | LED Kuning                        | 1          |
-| 7  | LED Merah                         | 1          |
-| 8  | Active Buzzer                     | 1          |
-| 9  | Kabel Jumper                      | Secukupnya |
+| No | Komponen                          | 
+| -- | --------------------------------- | 
+| 1  | ESP32 DevKit                      | 
+| 2  | Sensor Ultrasonik HC-SR04         | 
+| 3  | Water Sensor / Water Level Sensor | 
+| 4  | LCD 16×2 I2C                      | 
+| 5  | LED Hijau                         | 
+| 6  | LED Kuning                        | 
+| 7  | LED Merah                         | 
+| 8  | Active Buzzer                     | 
+| 9  | Kabel Jumper                      | 
 
 ---
 
@@ -101,10 +101,10 @@ Data dapat dipantau melalui dashboard monitoring seperti MQTT Explorer atau plat
 
 | Jarak Permukaan Air | Status  | LED                                             | Buzzer              |
 | ------------------- | ------- | ----------------------------------------------- | ------------------- |
-| > 100 cm            | Aman    | LED hijau menyala                               | Mati                |
-| 51 – 100 cm         | Waspada | LED kuning menyala                              | Bunyi lambat        |
-| 11 – 50 cm          | Siaga   | LED merah menyala                               | Bunyi sedang        |
-| ≤ 10 cm             | Darurat | LED hijau, kuning, dan merah menyala bergantian | Bunyi terus-menerus |
+| > 18 cm            | Aman    | LED hijau menyala                               | Mati                |
+| 12 – 18 cm         | Waspada | LED kuning menyala                              | Bunyi lambat        |
+| 6 – 12 cm          | Siaga   | LED merah menyala                               | Bunyi sedang        |
+| ≤ 6 cm             | Darurat | LED hijau, kuning, dan merah menyala bergantian | Bunyi terus-menerus |
 
 **Keterangan:**
 Semakin kecil jarak yang terbaca oleh sensor ultrasonik, maka semakin tinggi permukaan air mendekati sensor. Water sensor digunakan sebagai pendukung untuk memastikan adanya air pada area deteksi.
