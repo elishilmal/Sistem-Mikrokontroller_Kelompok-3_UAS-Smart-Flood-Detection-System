@@ -79,6 +79,8 @@ Data dapat dipantau melalui dashboard monitoring seperti MQTT Explorer atau plat
 | 7  | LED Merah                         | 
 | 8  | Active Buzzer                     | 
 | 9  | Kabel Jumper                      | 
+| 10 | BreadBoard                        | 
+| 11 | Resistor 220 ohm                  | 
 
 ---
 
