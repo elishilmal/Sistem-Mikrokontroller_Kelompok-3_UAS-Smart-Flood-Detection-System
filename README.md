@@ -201,3 +201,14 @@ Selain LED, buzzer juga digunakan sebagai alarm peringatan dini. Semakin berbaha
 IoT Smart Flood Detection System merupakan sistem deteksi dini banjir berbasis ESP32 yang memanfaatkan sensor ultrasonik dan water sensor untuk memantau kondisi air secara real-time. Sistem ini dilengkapi dengan LCD, LED indikator, buzzer, MQTT, dan RTOS sehingga dapat memberikan informasi kondisi banjir secara langsung, mengirimkan data ke dashboard monitoring, serta mengatur proses kerja sistem dengan lebih terstruktur.
 
 Dengan adanya sistem ini, pengguna dapat mengetahui potensi banjir lebih cepat dan melakukan tindakan pencegahan sebelum kondisi menjadi lebih berbahaya.
+
+---
+
+## Dokumetasi 
+
+### Kerja Kelompok
+![Kerkom](Assets/kerkom1.gif)
+![Kerkom](Assets/kerkom2.gif)
+![Kerkom](Assets/kerkom3.gif)
+
+### Finish Project
